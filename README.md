@@ -362,6 +362,16 @@ curl -X POST localhost:3000/realtime/start  # Start real-time mode
 
 MIT License - see LICENSE file for details.
 
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### What this means:
+- ✅ **Free to use** for personal and commercial projects
+- ✅ **Free to modify** and distribute
+- ✅ **No warranty** - use at your own risk
+- ✅ **Attribution required** - keep the copyright notice
+
 ## ⚖️ Ethics & Consent
 
 **Important**: Always obtain explicit consent before using voice cloning technology. This tool should only be used with your own voice or with explicit permission from others. Be transparent about AI assistance in professional settings when appropriate.

@@ -17,9 +17,16 @@
     "proxy",
     "websocket",
     "typescript",
-    "nodejs"
+    "nodejs",
+    "voice-cloning",
+    "real-time",
+    "whisper",
+    "ollama",
+    "tts",
+    "blackhole",
+    "video-calls"
   ],
-  "author": "",
+  "author": "Adarsh V K <adarshvk1997@yahoo.com>",
   "license": "MIT",
   "devDependencies": {
     "@types/express": "^4.17.21",
