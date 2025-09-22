@@ -1,0 +1,45 @@
+{
+  "name": "ai-voice-proxy",
+  "version": "1.0.0",
+  "description": "AI Voice Proxy Server - A Node.js TypeScript server for proxying and processing voice communications with AI services",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix"
+  },
+  "keywords": [
+    "ai",
+    "voice",
+    "proxy",
+    "websocket",
+    "typescript",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.24",
+    "@types/ws": "^8.5.10",
+    "@types/cors": "^2.8.17",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "express": "^4.18.3",
+    "ws": "^8.16.0",
+    "dotenv": "^16.4.5",
+    "cors": "^2.8.5",
+    "axios": "^1.6.7"
+  }
+}

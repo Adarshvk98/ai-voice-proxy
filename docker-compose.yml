@@ -1,0 +1,59 @@
+# AI Voice Proxy - Docker Compose Configuration
+# This sets up the supporting services for the AI Voice Proxy
+
+version: '3.8'
+
+services:
+  # Coqui TTS Service for voice synthesis and cloning
+  coqui-tts:
+    image: ghcr.io/coqui-ai/tts:latest
+    container_name: ai-voice-proxy-tts
+    ports:
+      - "5002:5002"
+    environment:
+      - TTS_PORT=5002
+      - TTS_HOST=0.0.0.0
+    volumes:
+      - ./models:/root/.local/share/tts
+      - ./audio_samples:/app/samples
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Whisper API Service for speech recognition
+  whisper-api:
+    image: onerahmet/openai-whisper-asr-webservice:latest
+    container_name: ai-voice-proxy-whisper
+    ports:
+      - "9000:9000"
+    environment:
+      - ASR_MODEL=base.en
+      - ASR_ENGINE=openai_whisper
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Optional: Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    container_name: ai-voice-proxy-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  default:
+    name: ai-voice-proxy-network
