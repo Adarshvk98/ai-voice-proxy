@@ -1,0 +1,49 @@
+{
+  "packages": [
+    "nodejs@20",
+    "pnpm@latest",
+    "python@3.11",
+    "docker",
+    "docker-compose",
+    "ollama",
+    "ffmpeg",
+    "portaudio",
+    "pkg-config"
+  ],
+  "shell": {
+    "init_hook": [
+      "source $DEVBOX_PROJECT_ROOT/devbox.d/init_hook.sh"
+    ],
+    "scripts": {
+      "setup": [
+        "chmod +x setup.sh",
+        "./setup.sh"
+      ],
+      "install-whisper": [
+        "python -m pip install --user pipx",
+        "pipx install openai-whisper",
+        "pipx ensurepath"
+      ],
+      "setup-ollama": [
+        "echo 'Starting Ollama service...'",
+        "ollama serve &",
+        "sleep 5",
+        "ollama pull llama3",
+        "echo 'Ollama setup complete!'"
+      ],
+      "build": "pnpm run build",
+      "dev": "pnpm run dev",
+      "test": "pnpm test",
+      "start": "pnpm start",
+      "install-deps": "pnpm install"
+    }
+  },
+  "env": {
+    "NODE_ENV": "development",
+    "WHISPER_MODEL": "base",
+    "OLLAMA_HOST": "http://localhost:11434",
+    "TTS_ENGINE": "coqui",
+    "AUDIO_SAMPLE_RATE": "16000",
+    "AUDIO_CHANNELS": "1"
+  }
+}

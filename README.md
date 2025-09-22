@@ -38,6 +38,41 @@ Your Microphone ──▶ Whisper ──▶ Ollama ──▶ Coqui TTS ──▶
 
 ## 🚀 Quick Start
 
+### 🎁 Option 1: Devbox (Recommended - Works Everywhere!)
+
+**Use Devbox for consistent, reproducible environments:**
+
+```bash
+# 1. Install Devbox (one-time setup)
+curl -fsSL https://get.jetpack.io/devbox | bash
+
+# 2. Clone and enter the project
+git clone https://github.com/Adarshvk98/ai-voice-proxy.git
+cd ai-voice-proxy
+
+# 3. Enter devbox shell (installs everything automatically)
+devbox shell
+
+# 4. Install Node.js dependencies with pnpm
+devbox run install-deps
+
+# 5. Install AI prerequisites
+devbox run install-whisper    # Speech recognition
+devbox run setup-ollama       # AI text processing
+
+# 6. Install BlackHole manually (one-time)
+# Download from: https://existential.audio/blackhole/
+
+# 7. Start developing!
+devbox run dev
+```
+
+**That's it!** Everything else is managed by Devbox. Perfect for teams and consistent environments.
+
+See [DEVBOX.md](DEVBOX.md) for complete Devbox documentation.
+
+### 🛠️ Option 2: Manual Installation
+
 ### Prerequisites
 
 - **macOS** (tested on M3, should work on Intel Macs)
@@ -89,8 +124,8 @@ ollama pull llama3
 git clone <repository-url>
 cd ai-voice-proxy
 
-# Install Node.js dependencies
-npm install
+# Install Node.js dependencies (uses pnpm for better performance)
+pnpm install
 
 # Set up environment variables
 cp .env.example .env
@@ -111,13 +146,13 @@ docker-compose logs -f
 
 ```bash
 # Build the TypeScript project
-npm run build
+pnpm run build
 
 # Start the AI Voice Proxy
-npm start
+pnpm start
 
 # For development with hot reload:
-npm run dev
+pnpm run dev
 ```
 
 ### 5. Configure Audio
