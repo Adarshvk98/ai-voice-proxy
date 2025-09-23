@@ -23,6 +23,7 @@ export class TTSService {
   private voiceId: string;
   private speed: number;
   private pitch: number;
+  private useLocalTTS: boolean;
 
   constructor(config: TTSConfig) {
     this.serviceUrl = config.serviceUrl || 'http://localhost:5002';
@@ -30,12 +31,62 @@ export class TTSService {
     this.voiceId = config.voiceId || 'default';
     this.speed = config.speed || 1.0;
     this.pitch = config.pitch || 1.0;
+    this.useLocalTTS = !config.serviceUrl; // Use local if no service URL provided
   }
 
   /**
    * Synthesize speech from text
    */
   async synthesizeText(text: string, outputPath?: string): Promise<Buffer> {
+    try {
+      if (this.useLocalTTS) {
+        return await this.synthesizeWithLocalTTS(text, outputPath);
+      } else {
+        return await this.synthesizeWithRemoteTTS(text, outputPath);
+      }
+    } catch (error) {
+      console.error('TTS synthesis error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Synthesize using local macOS TTS (say command)
+   */
+  private async synthesizeWithLocalTTS(text: string, outputPath?: string): Promise<Buffer> {
+    try {
+      const tempPath = outputPath || `/tmp/tts_${Date.now()}.aiff`;
+      
+      // Use macOS built-in 'say' command
+      const command = `say "${text.replace(/"/g, '\\"')}" -o "${tempPath}"`;
+      execSync(command);
+      
+      if (existsSync(tempPath)) {
+        const audioBuffer = readFileSync(tempPath);
+        
+        // Clean up temp file if we created it
+        if (!outputPath) {
+          try {
+            execSync(`rm "${tempPath}"`);
+          } catch {
+            // Ignore cleanup errors
+          }
+        }
+        
+        return audioBuffer;
+      }
+      
+      throw new Error('Failed to generate audio file');
+    } catch (error) {
+      console.error('Local TTS error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Synthesize using remote TTS service
+   */
+  private async synthesizeWithRemoteTTS(text: string, outputPath?: string): Promise<Buffer> {
     try {
       const response = await axios.post(`${this.serviceUrl}/api/tts`, {
         text,
@@ -114,11 +165,22 @@ export class TTSService {
    * Check if TTS service is available
    */
   async isAvailable(): Promise<boolean> {
-    try {
-      await axios.get(`${this.serviceUrl}/health`, { timeout: 5000 });
-      return true;
-    } catch {
-      return false;
+    if (this.useLocalTTS) {
+      // Check if macOS 'say' command is available
+      try {
+        execSync('which say', { stdio: 'ignore' });
+        return true;
+      } catch {
+        return false;
+      }
+    } else {
+      // Check remote TTS service
+      try {
+        await axios.get(`${this.serviceUrl}/health`, { timeout: 5000 });
+        return true;
+      } catch {
+        return false;
+      }
     }
   }
 

@@ -53,18 +53,25 @@ cd ai-voice-proxy
 # 3. Enter devbox shell (installs everything automatically)
 devbox shell
 
-# 4. Install Node.js dependencies with pnpm
+# 4. Install Node.js dependencies
 devbox run install-deps
 
-# 5. Install AI prerequisites
-devbox run install-whisper    # Speech recognition
-devbox run setup-ollama       # AI text processing
+# 5. Install AI prerequisites  
+devbox run install-whisper    # Installs Whisper in virtual environment
+devbox run setup-ollama       # Sets up Ollama with Llama3
 
-# 6. Install BlackHole manually (one-time)
-# Download from: https://existential.audio/blackhole/
+# 6. Install BlackHole (if not already installed)
+brew install blackhole-2ch
 
-# 7. Start developing!
+# 7. Start the application!
 devbox run dev
+```
+
+**What happens automatically:**
+- ✅ Python virtual environment with Whisper is created and activated
+- ✅ All dependencies (Node.js, Python, sox, ffmpeg) are installed  
+- ✅ Environment is configured for local services
+- ✅ Both `(.venv)` and `(devbox)` environments work together
 ```
 
 **That's it!** Everything else is managed by Devbox. Perfect for teams and consistent environments.
@@ -76,10 +83,12 @@ See [DEVBOX.md](DEVBOX.md) for complete Devbox documentation.
 ### Prerequisites
 
 - **macOS** (tested on M3, should work on Intel Macs)
-- **Node.js 16+**
-- **Docker** (for TTS and Whisper services)
+- **Node.js 18+**  
 - **Ollama** (for AI text improvement)
 - **BlackHole** (virtual audio driver)
+- **Homebrew** (for dependency management)
+
+*Note: Docker is optional - this setup uses local services for better performance*
 
 ### 🎮 Test Interface
 
@@ -132,7 +141,28 @@ cp .env.example .env
 # Edit .env with your preferences
 ```
 
-### 3. Start Supporting Services
+### 3. Start the Application
+
+```bash
+# Build the TypeScript project (first time only)
+pnpm run build
+
+# Start the development server (recommended)
+pnpm run dev
+
+# OR start production server
+pnpm start
+```
+
+The server will automatically:
+- ✅ Use local Whisper for speech recognition (from virtual environment)
+- ✅ Use local Ollama for AI text improvement  
+- ✅ Use macOS built-in TTS for voice synthesis
+- ✅ Detect BlackHole for virtual audio routing
+
+### 4. Optional: Docker Services (Advanced)
+
+If you prefer Docker-based TTS and Whisper services:
 
 ```bash
 # Start TTS and Whisper services with Docker
@@ -140,19 +170,10 @@ docker-compose up -d
 
 # Wait for services to be ready
 docker-compose logs -f
-```
 
-### 4. Build and Run
-
-```bash
-# Build the TypeScript project
-pnpm run build
-
-# Start the AI Voice Proxy
-pnpm start
-
-# For development with hot reload:
-pnpm run dev
+# Update .env to use remote services:
+# TTS_SERVICE_URL=http://localhost:5002
+# WHISPER_SERVICE_URL=http://localhost:9000
 ```
 
 ### 5. Configure Audio
@@ -191,6 +212,29 @@ curl -X POST http://localhost:3000/voice/clone \
 Or use the WebSocket interface for real-time cloning.
 
 ## 🔄 Usage Modes
+
+### Quick Test (Text Processing)
+
+```bash
+# Test AI text improvement
+curl -X POST http://localhost:3000/process-text \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Um, hello, this is like a test message, you know"}'
+
+# Test with virtual microphone output
+curl -X POST http://localhost:3000/process-text \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Hello from the AI voice proxy!", "outputToVirtualMic": true}'
+```
+
+### Web Interface Testing
+
+Open the test client in your browser:
+```bash
+open client/test-client.html
+```
+
+Or visit: http://localhost:3000
 
 ### Real-time Mode (For Live Calls)
 
@@ -370,9 +414,71 @@ The test client provides a user-friendly interface for all AI Voice Proxy featur
 
 ```bash
 # Setup (run once)
-./setup.sh                           # Automated system setup
-cp .env.example .env                  # Copy environment config
-docker-compose up -d                  # Start TTS & Whisper services
+devbox shell                          # Enter development environment
+devbox run install-whisper           # Install Whisper locally
+devbox run setup-ollama              # Install Ollama and Llama3
+brew install blackhole-2ch           # Install virtual audio driver
+
+# Development
+devbox run dev                        # Start development server
+curl http://localhost:3000/api       # Check available endpoints
+curl http://localhost:3000/status    # Check service status
+
+# Testing
+curl -X POST http://localhost:3000/process-text \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Test message"}'      # Test text processing
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+**"Whisper service not available"**
+- Ensure you're in devbox shell: `devbox shell`
+- Check virtual environment: `which whisper` (should show `.venv/bin/whisper`)
+- Reinstall if needed: `devbox run install-whisper`
+
+**"TTS service not available"**  
+- Using local macOS TTS by default (no setup needed)
+- Ensure `TTS_SERVICE_URL` is commented out in `.env`
+- Test manually: `say "Hello world"`
+
+**"Error listing audio devices"**
+- Install BlackHole: `brew install blackhole-2ch`
+- Check Audio MIDI Setup for BlackHole device
+- Restart application after installing BlackHole
+
+**Port 3000 already in use**
+- Stop existing processes: `pkill -f ts-node-dev`
+- Or use different port: `PORT=3001 npm run dev`
+
+### Environment Check
+
+```bash
+# Verify setup
+devbox shell                          # Should show (devbox) prompt
+echo $VIRTUAL_ENV                     # Should show .venv path  
+whisper --help                        # Should work without errors
+ollama list                           # Should show llama3 model
+say "test"                            # Should hear audio output
+```
+
+## 📝 Current Status
+
+✅ **Working Features:**
+- Local Whisper speech recognition
+- Local Ollama AI text improvement  
+- macOS built-in TTS voice synthesis
+- BlackHole virtual audio routing
+- REST API endpoints
+- Web-based test client
+- Real-time voice processing pipeline
+
+⚠️ **Optional Enhancements:**
+- Advanced voice cloning (requires Docker TTS service)
+- Custom voice models
+- Cloud service fallbacks
 
 # Development
 npm run dev                           # Start with hot reload

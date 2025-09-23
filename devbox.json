@@ -3,12 +3,15 @@
     "nodejs@20",
     "pnpm@latest",
     "python@3.11",
+    "python311Packages.pip",
+    "python311Packages.virtualenv",
     "docker",
     "docker-compose",
     "ollama",
     "ffmpeg",
     "portaudio",
-    "pkg-config"
+    "pkg-config",
+    "sox"
   ],
   "shell": {
     "init_hook": [
@@ -20,9 +23,17 @@
         "./setup.sh"
       ],
       "install-whisper": [
-        "python -m pip install --user pipx",
-        "pipx install openai-whisper",
-        "pipx ensurepath"
+        "python -m venv .venv",
+        "source .venv/bin/activate && pip install openai-whisper flask",
+        "echo 'OpenAI Whisper and Flask installed in virtual environment!'",
+        "echo 'To use: source .venv/bin/activate && whisper <audio_file>'"
+      ],
+      "start-whisper-service": [
+        "source .venv/bin/activate && python whisper_service.py",
+        "echo 'Whisper web service started on port 9000'"
+      ],
+      "activate-venv": [
+        "source .venv/bin/activate && echo 'Virtual environment activated - Whisper is now available!'"
       ],
       "setup-ollama": [
         "echo 'Starting Ollama service...'",
@@ -32,9 +43,15 @@
         "echo 'Ollama setup complete!'"
       ],
       "build": "pnpm run build",
-      "dev": "pnpm run dev",
+      "dev": [
+        "source .venv/bin/activate 2>/dev/null || echo 'Virtual env not found, continuing...'",
+        "pnpm run dev"
+      ],
+      "start": [
+        "source .venv/bin/activate 2>/dev/null || echo 'Virtual env not found, continuing...'", 
+        "pnpm start"
+      ],
       "test": "pnpm test",
-      "start": "pnpm start",
       "install-deps": "pnpm install"
     }
   },

@@ -48,7 +48,11 @@ export class WhisperService {
         throw new Error('Whisper is not installed. Please install it using: pip install openai-whisper');
       }
 
-      const command = `whisper "${audioFilePath}" --model ${this.model} --language ${this.language} --output_format txt --output_dir /tmp`;
+      // Use virtual environment whisper if available, otherwise system PATH
+      const venvWhisperPath = path.join(process.cwd(), '.venv/bin/whisper');
+      const whisperCommand = existsSync(venvWhisperPath) ? venvWhisperPath : 'whisper';
+      
+      const command = `${whisperCommand} "${audioFilePath}" --model ${this.model} --language ${this.language} --output_format txt --output_dir /tmp`;
       const output = execSync(command, { encoding: 'utf8' });
       
       // Read the generated transcript file
@@ -121,6 +125,13 @@ export class WhisperService {
    */
   private isWhisperInstalled(): boolean {
     try {
+      // Try virtual environment first, then system PATH
+      const venvPath = path.join(process.cwd(), '.venv/bin/whisper');
+      if (existsSync(venvPath)) {
+        execSync(`${venvPath} --help`, { stdio: 'ignore' });
+        return true;
+      }
+      // Fallback to system PATH
       execSync('whisper --version', { stdio: 'ignore' });
       return true;
     } catch {

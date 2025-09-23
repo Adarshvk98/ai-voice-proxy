@@ -4,7 +4,7 @@
 echo "🚀 AI Voice Proxy Development Environment"
 echo "📦 Node.js: $(node --version 2>/dev/null || echo 'Not available')"
 echo "� pnpm: $(pnpm --version 2>/dev/null || echo 'Not available')"
-echo "�🐍 Python: $(python --version 2>/dev/null || echo 'Not available')"
+echo "🐍 Python: $(python --version 2>/dev/null || echo 'Not available')"
 echo "🐳 Docker: $(docker --version 2>/dev/null || echo 'Not available')"
 echo "🤖 Ollama: $(ollama --version 2>/dev/null || echo 'Not installed yet')"
 echo "🎵 FFmpeg: $(ffmpeg -version 2>/dev/null | head -1 | cut -d' ' -f3 || echo 'Not available')"
@@ -31,6 +31,20 @@ export OLLAMA_HOST=http://localhost:11434
 export TTS_ENGINE=coqui
 export AUDIO_SAMPLE_RATE=16000
 export AUDIO_CHANNELS=1
+
+# Activate Python virtual environment if it exists
+if [ -f "$DEVBOX_PROJECT_ROOT/.venv/bin/activate" ]; then
+    echo "🐍 Activating Python virtual environment..."
+    source "$DEVBOX_PROJECT_ROOT/.venv/bin/activate"
+    echo "✅ Virtual environment activated - Whisper is now available!"
+    
+    # Verify Whisper is available
+    if command -v whisper >/dev/null 2>&1; then
+        echo "🎤 Whisper: $(whisper --help 2>/dev/null | head -1 || echo 'Available')"
+    fi
+else
+    echo "⚠️  Virtual environment not found. Run 'devbox run install-whisper' first."
+fi
 
 # Add pipx to PATH if available
 if command -v pipx &> /dev/null; then

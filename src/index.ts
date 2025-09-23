@@ -31,7 +31,7 @@ const voiceProxyConfig: AIVoiceProxyConfig = {
     baseUrl: process.env.OLLAMA_BASE_URL,
   },
   tts: {
-    serviceUrl: process.env.TTS_SERVICE_URL || 'http://localhost:5002',
+    serviceUrl: process.env.TTS_SERVICE_URL, // Don't provide fallback - let TTSService decide
     model: process.env.TTS_MODEL,
     voiceId: process.env.TTS_VOICE_ID,
   },

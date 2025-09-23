@@ -158,6 +158,14 @@
       "resolved": "github:NixOS/nixpkgs/a1f79a1770d05af18111fbbe2a3ab2c42c0f6cd0?narHash=sha256-5rdAi7CTvM%2FkSs6fHe1bREIva5W3TbImsto%2BdxG4mBo%3D#portaudio",
       "source": "nixpkg"
     },
+    "python311Packages.pip": {
+      "resolved": "github:NixOS/nixpkgs/a1f79a1770d05af18111fbbe2a3ab2c42c0f6cd0?narHash=sha256-5rdAi7CTvM%2FkSs6fHe1bREIva5W3TbImsto%2BdxG4mBo%3D#python311Packages.pip",
+      "source": "nixpkg"
+    },
+    "python311Packages.virtualenv": {
+      "resolved": "github:NixOS/nixpkgs/a1f79a1770d05af18111fbbe2a3ab2c42c0f6cd0?narHash=sha256-5rdAi7CTvM%2FkSs6fHe1bREIva5W3TbImsto%2BdxG4mBo%3D#python311Packages.virtualenv",
+      "source": "nixpkg"
+    },
     "python@3.11": {
       "last_modified": "2025-07-28T17:09:23Z",
       "plugin_version": "0.0.4",
@@ -214,6 +222,10 @@
           "store_path": "/nix/store/xldyfac0kbcl5c1yp9ygsag5y23irwxs-python3-3.11.13"
         }
       }
+    },
+    "sox": {
+      "resolved": "github:NixOS/nixpkgs/a1f79a1770d05af18111fbbe2a3ab2c42c0f6cd0?narHash=sha256-5rdAi7CTvM%2FkSs6fHe1bREIva5W3TbImsto%2BdxG4mBo%3D#sox",
+      "source": "nixpkg"
     }
   }
 }
