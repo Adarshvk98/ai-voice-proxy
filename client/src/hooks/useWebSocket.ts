@@ -77,8 +77,7 @@ class WebSocketManager {
         this.socket = null
         this.notifyListeners({ type: 'close' })
 
-        // Disable auto-reconnection for now to stabilize
-        /*
+        // Auto-reconnection logic
         if (this.shouldConnect && this.reconnectAttempts < this.maxReconnectAttempts) {
           this.reconnectAttempts++
           const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 10000)
@@ -90,7 +89,6 @@ class WebSocketManager {
         } else if (this.reconnectAttempts >= this.maxReconnectAttempts) {
           this.notifyListeners({ type: 'error', data: 'Max reconnection attempts reached' })
         }
-        */
       }
 
       this.socket.onerror = (event) => {

@@ -16,6 +16,29 @@ interface ServerStatus {
   realtimeActive: boolean
 }
 
+interface TextProcessedMessage {
+  type: 'textProcessed'
+  result: {
+    improvedText: string
+  }
+}
+
+interface ChunkProcessedMessage {
+  type: 'chunkProcessed'
+  data: unknown
+}
+
+interface ErrorMessage {
+  type: 'error'
+  message: string
+}
+
+interface RealTimeMessage {
+  type: 'realTimeStarted' | 'realTimeStopped'
+}
+
+type WebSocketMessage = TextProcessedMessage | ChunkProcessedMessage | ErrorMessage | RealTimeMessage
+
 export function AIVoiceProxyClient() {
   const [serverStatus, setServerStatus] = useState<ServerStatus | null>(null)
   const [testText, setTestText] = useState('')
@@ -53,9 +76,10 @@ export function AIVoiceProxyClient() {
   // Handle WebSocket messages
   useEffect(() => {
     if (lastMessage) {
-      switch (lastMessage.type) {
+      const message = lastMessage as WebSocketMessage
+      switch (message.type) {
         case 'textProcessed':
-          setProcessedText((lastMessage as any).result?.improvedText || '')
+          setProcessedText(message.result?.improvedText || '')
           setIsProcessing(false)
           break
         case 'realTimeStarted':
@@ -65,10 +89,10 @@ export function AIVoiceProxyClient() {
           setIsRealTimeActive(false)
           break
         case 'chunkProcessed':
-          console.log('Chunk processed:', (lastMessage as any).data)
+          console.log('Chunk processed:', message.data)
           break
         case 'error':
-          console.error('WebSocket error:', (lastMessage as any).message)
+          console.error('WebSocket error:', message.message)
           setIsProcessing(false)
           break
       }
