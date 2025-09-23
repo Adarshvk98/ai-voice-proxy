@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import chalk from 'chalk';
 import { WhisperService } from './WhisperService';
 import { OllamaService } from './OllamaService';
 import { TTSService } from './TTSService';
@@ -78,7 +79,7 @@ export class AIVoiceProxyOrchestrator extends EventEmitter {
    */
   async initialize(): Promise<void> {
     try {
-      console.log('Initializing AI Voice Proxy...');
+      console.log(chalk.cyan('🔄 ') + chalk.bold('Initializing AI Voice Proxy...'));
       
       // Check if all services are available
       const [whisperAvailable, ollamaAvailable, ttsAvailable] = await Promise.all([
@@ -88,27 +89,35 @@ export class AIVoiceProxyOrchestrator extends EventEmitter {
       ]);
 
       if (!whisperAvailable) {
-        console.warn('Whisper service not available. Install with: pip install openai-whisper');
+        console.warn(chalk.yellow('⚠️  Whisper service not available. Install with: ') + chalk.cyan('pip install openai-whisper'));
+      } else {
+        console.log(chalk.green('✅ Whisper service ready'));
       }
 
       if (!ollamaAvailable) {
-        console.warn('Ollama not available. Install from: https://ollama.ai');
+        console.warn(chalk.yellow('⚠️  Ollama not available. Install from: ') + chalk.blue.underline('https://ollama.ai'));
         await this.ollamaService.installModel();
+      } else {
+        console.log(chalk.green('✅ Ollama service ready'));
       }
 
       if (!ttsAvailable) {
-        console.warn('TTS service not available. Please start the TTS server.');
+        console.warn(chalk.yellow('⚠️  TTS service not available. Please start the TTS server.'));
+      } else {
+        console.log(chalk.green('✅ TTS service ready'));
       }
 
       // Check BlackHole installation
       if (!this.audioService.isBlackHoleInstalled()) {
-        console.warn('BlackHole not detected. Install from: https://github.com/ExistentialAudio/BlackHole');
+        console.warn(chalk.yellow('⚠️  BlackHole not detected. Install from: ') + chalk.blue.underline('https://github.com/ExistentialAudio/BlackHole'));
+      } else {
+        console.log(chalk.green('✅ BlackHole audio driver ready'));
       }
 
-      console.log('AI Voice Proxy initialization complete');
+      console.log(chalk.green('🎯 ') + chalk.bold.green('AI Voice Proxy initialization complete'));
       this.emit('initialized');
     } catch (error) {
-      console.error('Initialization error:', error);
+      console.error(chalk.red('❌ Initialization error:'), error);
       this.emit('error', error);
     }
   }
@@ -118,7 +127,7 @@ export class AIVoiceProxyOrchestrator extends EventEmitter {
    */
   async cloneVoice(sampleAudioPath: string, voiceName: string): Promise<string> {
     try {
-      console.log(`Cloning voice from: ${sampleAudioPath}`);
+      console.log(chalk.cyan('🎭 Voice Cloning: Processing sample from ') + chalk.yellow(sampleAudioPath));
       const voiceId = await this.ttsService.cloneVoice({
         sampleAudioPath,
         voiceName,
@@ -127,12 +136,12 @@ export class AIVoiceProxyOrchestrator extends EventEmitter {
       this.state.currentVoiceId = voiceId;
       this.ttsService.setVoiceId(voiceId);
       
-      console.log(`Voice cloned successfully. Voice ID: ${voiceId}`);
+      console.log(chalk.green('🎉 Voice Cloning: Voice cloned successfully! Voice ID: ') + chalk.yellow(voiceId));
       this.emit('voiceCloned', { voiceId, voiceName });
       
       return voiceId;
     } catch (error) {
-      console.error('Voice cloning error:', error);
+      console.error(chalk.red('❌ Voice Cloning: Error occurred:'), error);
       this.emit('error', error);
       throw error;
     }
@@ -143,22 +152,22 @@ export class AIVoiceProxyOrchestrator extends EventEmitter {
    */
   async startRealTimeMode(): Promise<void> {
     if (this.isRealTimeMode) {
-      console.warn('Real-time mode already active');
+      console.warn(chalk.yellow('⚠️  Real-time mode already active'));
       return;
     }
 
     try {
       this.isRealTimeMode = true;
-      console.log('Starting real-time voice proxy mode...');
+      console.log(chalk.cyan('🎙️  Starting real-time voice proxy mode...'));
       
       // Start listening to microphone
       this.audioService.startRecording();
       this.state.isListening = true;
       
-      console.log('Real-time mode active. Speak into the microphone.');
+      console.log(chalk.green('🔴 Real-time mode active. Speak into the microphone.'));
       this.emit('realTimeModeStarted');
     } catch (error) {
-      console.error('Error starting real-time mode:', error);
+      console.error(chalk.red('❌ Error starting real-time mode:'), error);
       this.emit('error', error);
     }
   }
@@ -176,7 +185,7 @@ export class AIVoiceProxyOrchestrator extends EventEmitter {
     this.state.isListening = false;
     this.audioBuffer = [];
     
-    console.log('Real-time mode stopped');
+    console.log(chalk.blue('🛑 Real-time mode stopped'));
     this.emit('realTimeModeStopped');
   }
 
@@ -189,15 +198,15 @@ export class AIVoiceProxyOrchestrator extends EventEmitter {
       this.emit('processingStarted', { type: 'text', input: text });
 
       // Improve text with Ollama
-      console.log('Improving text with AI...');
+      console.log(chalk.cyan('🤖 Processing: Improving text with AI...'));
       const improvedText = await this.ollamaService.rephraseText(text);
       this.state.lastImprovedText = improvedText;
       
-      console.log(`Original: ${text}`);
-      console.log(`Improved: ${improvedText}`);
+      console.log(chalk.yellow('📝 Original: ') + chalk.gray(text));
+      console.log(chalk.green('✨ Improved: ') + chalk.white(improvedText));
 
       // Generate speech
-      console.log('Generating speech...');
+      console.log(chalk.cyan('🗣️  Processing: Generating speech...'));
       const audioBuffer = await this.ttsService.synthesizeText(improvedText);
 
       this.state.isProcessing = false;
@@ -206,7 +215,7 @@ export class AIVoiceProxyOrchestrator extends EventEmitter {
       return { improvedText, audioBuffer };
     } catch (error) {
       this.state.isProcessing = false;
-      console.error('Text processing error:', error);
+      console.error(chalk.red('❌ Processing: Text processing error:'), error);
       this.emit('error', error);
       throw error;
     }

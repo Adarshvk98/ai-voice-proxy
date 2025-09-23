@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { writeFileSync, readFileSync, existsSync } from 'fs';
 import { execSync } from 'child_process';
+import chalk from 'chalk';
 import path from 'path';
 
 export interface TTSConfig {
@@ -45,7 +46,7 @@ export class TTSService {
         return await this.synthesizeWithRemoteTTS(text, outputPath);
       }
     } catch (error) {
-      console.error('TTS synthesis error:', error);
+      console.error(chalk.red('❌ TTS: Speech synthesis error:'), error);
       throw error;
     }
   }
@@ -78,7 +79,7 @@ export class TTSService {
       
       throw new Error('Failed to generate audio file');
     } catch (error) {
-      console.error('Local TTS error:', error);
+      console.error(chalk.red('❌ TTS: Local synthesis error:'), error);
       throw error;
     }
   }
@@ -107,7 +108,7 @@ export class TTSService {
       
       return audioBuffer;
     } catch (error) {
-      console.error('TTS synthesis error:', error);
+      console.error(chalk.red('❌ TTS: Remote synthesis error:'), error);
       throw error;
     }
   }
@@ -140,10 +141,10 @@ export class TTSService {
       const voiceId = response.data.voice_id;
       this.voiceId = voiceId;
       
-      console.log(`Voice cloned successfully. Voice ID: ${voiceId}`);
+      console.log(chalk.green('🎭 TTS: Voice cloned successfully! Voice ID: ') + chalk.yellow(voiceId));
       return voiceId;
     } catch (error) {
-      console.error('Voice cloning error:', error);
+      console.error(chalk.red('❌ TTS: Voice cloning error:'), error);
       throw error;
     }
   }
@@ -156,7 +157,7 @@ export class TTSService {
       const response = await axios.get(`${this.serviceUrl}/api/voices`);
       return response.data.voices || [];
     } catch (error) {
-      console.error('Error listing voices:', error);
+      console.error(chalk.red('❌ TTS: Error listing voices:'), error);
       return [];
     }
   }
@@ -219,14 +220,14 @@ export class TTSService {
       });
 
       response.data.on('end', () => {
-        console.log('TTS streaming completed');
+        console.log(chalk.green('✅ TTS: Streaming completed'));
       });
 
       response.data.on('error', (error: Error) => {
-        console.error('TTS streaming error:', error);
+        console.error(chalk.red('❌ TTS: Streaming error:'), error);
       });
     } catch (error) {
-      console.error('TTS streaming error:', error);
+      console.error(chalk.red('❌ TTS: Streaming error:'), error);
       throw error;
     }
   }
@@ -238,9 +239,9 @@ export class TTSService {
     try {
       const command = `espeak "${text}" -w "${outputPath}" -s 150 -p 50`;
       execSync(command);
-      console.log(`Audio synthesized with espeak: ${outputPath}`);
+      console.log(chalk.green('🔊 TTS: Audio synthesized with espeak: ') + chalk.cyan(outputPath));
     } catch (error) {
-      console.error('Espeak synthesis error:', error);
+      console.error(chalk.red('❌ TTS: Espeak synthesis error:'), error);
       throw error;
     }
   }

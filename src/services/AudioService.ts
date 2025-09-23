@@ -1,5 +1,6 @@
 import { execSync } from 'child_process';
 import { EventEmitter } from 'events';
+import chalk from 'chalk';
 
 export interface AudioConfig {
   sampleRate?: number;
@@ -30,7 +31,7 @@ export class AudioService extends EventEmitter {
    */
   startRecording(): void {
     if (this.isRecording) {
-      console.warn('Already recording');
+      console.warn(chalk.yellow('⚠️  Audio: Already recording from microphone'));
       return;
     }
 
@@ -43,26 +44,27 @@ export class AudioService extends EventEmitter {
       });
 
       this.isRecording = true;
-      console.log('Started recording audio');
+      console.log(chalk.green('🎤 Audio: Started recording from microphone') + 
+        chalk.gray(` (${this.config.sampleRate}Hz, ${this.config.channels}ch, ${this.config.bitDepth}bit)`));
 
       this.micProcess.stdout.on('data', (data: Buffer) => {
         this.emit('audioData', data);
       });
 
       this.micProcess.on('error', (error: Error) => {
-        console.error('Recording error:', error);
+        console.error(chalk.red('❌ Audio: Recording error:'), error);
         this.emit('error', error);
         this.isRecording = false;
       });
 
       this.micProcess.on('close', () => {
-        console.log('Recording stopped');
+        console.log(chalk.blue('🛑 Audio: Recording stopped'));
         this.isRecording = false;
         this.emit('recordingStopped');
       });
 
     } catch (error) {
-      console.error('Failed to start recording:', error);
+      console.error(chalk.red('❌ Audio: Failed to start recording:'), error);
       this.emit('error', error);
     }
   }
@@ -80,7 +82,7 @@ export class AudioService extends EventEmitter {
       this.isRecording = false;
       this.micProcess = null;
     } catch (error) {
-      console.error('Error stopping recording:', error);
+      console.error(chalk.red('❌ Audio: Error stopping recording:'), error);
     }
   }
 
@@ -94,6 +96,8 @@ export class AudioService extends EventEmitter {
       // Write audio buffer to temporary file
       const tempFile = `/tmp/audio_${Date.now()}.wav`;
       require('fs').writeFileSync(tempFile, audioBuffer);
+      
+      console.log(chalk.cyan('🔊 Audio: Playing to output device ') + chalk.yellow(device));
       
       // Play to specified device
       const command = `ffplay -nodisp -autoexit -f wav -i "${tempFile}"`;
@@ -109,7 +113,7 @@ export class AudioService extends EventEmitter {
       }, 1000);
 
     } catch (error) {
-      console.error('Audio playback error:', error);
+      console.error(chalk.red('❌ Audio: Playback error:'), error);
     }
   }
 

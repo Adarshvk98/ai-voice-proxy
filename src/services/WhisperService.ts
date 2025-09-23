@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { writeFileSync, readFileSync, existsSync } from 'fs';
 import { execSync } from 'child_process';
+import chalk from 'chalk';
 import path from 'path';
 
 export interface WhisperConfig {
@@ -33,7 +34,7 @@ export class WhisperService {
         return await this.transcribeWithAPI(audioFilePath);
       }
     } catch (error) {
-      console.error('Whisper transcription error:', error);
+      console.error(chalk.red('❌ Whisper: Audio transcription error:'), error);
       throw error;
     }
   }
@@ -66,7 +67,7 @@ export class WhisperService {
       
       return '';
     } catch (error) {
-      console.error('CLI transcription error:', error);
+      console.error(chalk.red('❌ Whisper: CLI transcription error:'), error);
       throw error;
     }
   }
@@ -91,7 +92,7 @@ export class WhisperService {
 
       return response.data.text || '';
     } catch (error) {
-      console.error('API transcription error:', error);
+      console.error(chalk.red('❌ Whisper: API transcription error:'), error);
       throw error;
     }
   }
@@ -115,7 +116,7 @@ export class WhisperService {
       
       return result;
     } catch (error) {
-      console.error('Buffer transcription error:', error);
+      console.error(chalk.red('❌ Whisper: Buffer transcription error:'), error);
       throw error;
     }
   }
@@ -161,7 +162,7 @@ export class WhisperService {
   async startRealtimeTranscription(onTranscript: (text: string) => void): Promise<void> {
     // This would implement streaming transcription
     // For now, we'll use a polling approach with temporary files
-    console.log('Real-time transcription started');
+    console.log(chalk.cyan('🔄 Whisper: Real-time transcription started'));
     
     // Implementation would involve:
     // 1. Continuous audio capture

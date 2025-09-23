@@ -3,12 +3,31 @@ import cors from 'cors';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 import dotenv from 'dotenv';
+import chalk from 'chalk';
+import { networkInterfaces } from 'os';
 import { AIVoiceProxyOrchestrator, AIVoiceProxyConfig } from './services/AIVoiceProxyOrchestrator';
 import { setupRoutes } from './routes';
 import { errorHandler } from './middleware/errorHandler';
 
 // Load environment variables
 dotenv.config();
+
+// Helper function to get network addresses
+function getNetworkAddresses(): string[] {
+  const addresses: string[] = [];
+  const nets = networkInterfaces();
+  
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name] || []) {
+      // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+      if (net.family === 'IPv4' && !net.internal) {
+        addresses.push(net.address);
+      }
+    }
+  }
+  
+  return addresses;
+}
 
 const app = express();
 const server = createServer(app);
@@ -57,7 +76,7 @@ setupRoutes(app, aiVoiceProxy);
 
 // WebSocket handling for real-time communication
 wss.on('connection', (ws) => {
-  console.log('WebSocket client connected');
+  console.log(chalk.green('🔗 WebSocket client connected'));
   
   ws.on('message', async (data) => {
     try {
@@ -94,7 +113,7 @@ wss.on('connection', (ws) => {
           ws.send(JSON.stringify({ type: 'error', message: 'Unknown message type' }));
       }
     } catch (error) {
-      console.error('WebSocket error:', error);
+      console.error(chalk.red('❌ WebSocket error:'), error);
       ws.send(JSON.stringify({ 
         type: 'error', 
         message: error instanceof Error ? error.message : 'Unknown error' 
@@ -103,17 +122,20 @@ wss.on('connection', (ws) => {
   });
   
   ws.on('close', () => {
-    console.log('WebSocket client disconnected');
+    console.log(chalk.yellow('🔌 WebSocket client disconnected'));
   });
 });
 
 // AI Voice Proxy event handlers
 aiVoiceProxy.on('initialized', () => {
-  console.log('AI Voice Proxy initialized successfully');
+  console.log(chalk.green('🎉 AI Voice Proxy initialized successfully!'));
+  console.log(chalk.cyan('📝 Ready to process voice and text requests\n'));
 });
 
 aiVoiceProxy.on('chunkProcessed', (data) => {
-  console.log(`Processed chunk: "${data.transcript}" -> "${data.improvedText}"`);
+  console.log(chalk.cyan('🎤 ') + chalk.green('Processed chunk: ') + 
+    chalk.yellow(`"${data.transcript}"`) + chalk.green(' → ') + 
+    chalk.blue(`"${data.improvedText}"`));
   
   // Broadcast to all connected WebSocket clients
   wss.clients.forEach((client) => {
@@ -127,7 +149,7 @@ aiVoiceProxy.on('chunkProcessed', (data) => {
 });
 
 aiVoiceProxy.on('error', (error) => {
-  console.error('AI Voice Proxy error:', error);
+  console.error(chalk.red('❌ AI Voice Proxy error:'), error);
   
   // Broadcast error to all connected WebSocket clients
   wss.clients.forEach((client) => {
@@ -146,23 +168,38 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, async () => {
-  console.log(`AI Voice Proxy Server running on port ${PORT}`);
-  console.log(`WebSocket server ready for connections`);
+  const networkAddresses = getNetworkAddresses();
+  
+  console.log('\n' + chalk.cyan('🚀 ') + chalk.bold.green('AI Voice Proxy Server Successfully Started!'));
+  console.log(chalk.cyan('📍 Local: ') + chalk.blue.underline(`http://localhost:${PORT}`));
+  
+  if (networkAddresses.length > 0) {
+    console.log(chalk.cyan('🌐 Network: ') + chalk.blue.underline(`http://${networkAddresses[0]}:${PORT}`));
+    if (networkAddresses.length > 1) {
+      networkAddresses.slice(1).forEach(addr => {
+        console.log(chalk.cyan('         ') + chalk.blue.underline(`http://${addr}:${PORT}`));
+      });
+    }
+  }
+  
+  console.log(chalk.cyan('🔌 Port: ') + chalk.yellow(PORT));
+  console.log(chalk.cyan('🌐 WebSocket: ') + chalk.green('✅ Ready for connections'));
+  console.log(chalk.gray('━'.repeat(60)));
   
   // Initialize the AI Voice Proxy
   try {
     await aiVoiceProxy.initialize();
   } catch (error) {
-    console.error('Failed to initialize AI Voice Proxy:', error);
+    console.error(chalk.red('❌ Failed to initialize AI Voice Proxy:'), error);
   }
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('SIGTERM received, shutting down gracefully');
+  console.log(chalk.yellow('⚠️  SIGTERM received, shutting down gracefully...'));
   aiVoiceProxy.stopRealTimeMode();
   server.close(() => {
-    console.log('Server closed');
+    console.log(chalk.green('✅ Server closed successfully'));
     process.exit(0);
   });
 });

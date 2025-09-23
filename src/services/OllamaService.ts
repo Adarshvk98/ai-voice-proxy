@@ -1,5 +1,6 @@
 import { execSync } from 'child_process';
 import { writeFileSync, existsSync } from 'fs';
+import chalk from 'chalk';
 import path from 'path';
 
 export interface OllamaConfig {
@@ -29,7 +30,7 @@ export class OllamaService {
       
       return output.trim() || input;
     } catch (error) {
-      console.error('Ollama error:', error);
+      console.error(chalk.red('❌ Ollama: Text rephrasing error:'), error);
       return input; // Fallback to original text
     }
   }
@@ -54,11 +55,11 @@ export class OllamaService {
    */
   async installModel(): Promise<void> {
     try {
-      console.log(`Installing Ollama model: ${this.model}...`);
+      console.log(chalk.cyan('📦 Ollama: Installing model ') + chalk.yellow(this.model) + chalk.cyan('...'));
       execSync(`ollama pull ${this.model}`, { stdio: 'inherit' });
-      console.log(`Model ${this.model} installed successfully`);
+      console.log(chalk.green('✅ Ollama: Model ') + chalk.yellow(this.model) + chalk.green(' installed successfully'));
     } catch (error) {
-      console.error(`Failed to install model ${this.model}:`, error);
+      console.error(chalk.red(`❌ Ollama: Failed to install model ${this.model}:`), error);
       throw error;
     }
   }
@@ -73,7 +74,7 @@ export class OllamaService {
       
       return output.trim();
     } catch (error) {
-      console.error('Ollama generation error:', error);
+      console.error(chalk.red('❌ Ollama: Response generation error:'), error);
       throw error;
     }
   }

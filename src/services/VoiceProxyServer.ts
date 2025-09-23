@@ -1,5 +1,6 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { EventEmitter } from 'events';
+import chalk from 'chalk';
 
 export interface VoiceMessage {
   type: 'audio' | 'text' | 'control';
@@ -35,24 +36,24 @@ export class VoiceProxyServer extends EventEmitter {
       const clientId = this.generateClientId();
       this.clients.set(clientId, ws);
       
-      console.log(`Client ${clientId} connected`);
+      console.log(chalk.green('🔗 VoiceProxy: Client ') + chalk.yellow(clientId) + chalk.green(' connected'));
       
       ws.on('message', async (data: Buffer) => {
         try {
           await this.handleMessage(clientId, data);
         } catch (error) {
-          console.error(`Error handling message from ${clientId}:`, error);
+          console.error(chalk.red(`❌ VoiceProxy: Error handling message from ${clientId}:`), error);
           this.sendError(clientId, 'Failed to process message');
         }
       });
       
       ws.on('close', () => {
-        console.log(`Client ${clientId} disconnected`);
+        console.log(chalk.yellow('🔌 VoiceProxy: Client ') + chalk.yellow(clientId) + chalk.yellow(' disconnected'));
         this.clients.delete(clientId);
       });
       
       ws.on('error', (error) => {
-        console.error(`WebSocket error for client ${clientId}:`, error);
+        console.error(chalk.red(`❌ VoiceProxy: WebSocket error for client ${clientId}:`), error);
         this.clients.delete(clientId);
       });
       
@@ -103,7 +104,7 @@ export class VoiceProxyServer extends EventEmitter {
           throw new Error(`Unknown message type: ${message.type}`);
       }
     } catch (error) {
-      console.error('Error in handleMessage:', error);
+      console.error(chalk.red('❌ VoiceProxy: Error in handleMessage:'), error);
       throw error;
     }
   }
