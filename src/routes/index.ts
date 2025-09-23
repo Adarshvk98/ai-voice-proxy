@@ -41,11 +41,13 @@ export function setupRoutes(app: Express, aiVoiceProxy: AIVoiceProxyOrchestrator
   });
 
   // Status endpoint
-  app.get('/status', (req: Request, res: Response) => {
+  app.get('/status', async (req: Request, res: Response) => {
     const state = aiVoiceProxy.getState();
+    const serviceStatus = await aiVoiceProxy.getServiceStatus();
     res.json({
       state,
-      audioDevices: aiVoiceProxy.getAudioDevices()
+      audioDevices: aiVoiceProxy.getAudioDevices(),
+      ...serviceStatus
     });
   });
 

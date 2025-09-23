@@ -90,13 +90,29 @@ See [DEVBOX.md](DEVBOX.md) for complete Devbox documentation.
 
 *Note: Docker is optional - this setup uses local services for better performance*
 
-### 🎮 Test Interface
+### 🎮 React Client Interface
 
-A web-based test client is included at `client/test-client.html`. Open it in your browser after starting the server to:
-- Control real-time mode
-- Test text processing
-- Clone voices
-- Monitor system status
+A modern React-based web client with shadcn/ui components provides a beautiful interface for testing and controlling your AI Voice Proxy:
+
+**Features:**
+- 🔧 **Real-time Status Monitoring**: Live service status indicators
+- 🎤 **Real-time Voice Control**: Start/stop voice processing with visual feedback
+- 📝 **Text Processing Test**: Test AI text improvement with immediate results
+- 🎭 **Voice Cloning Interface**: Easy voice cloning through web UI
+- 🌐 **WebSocket Integration**: Real-time communication with the server
+- 🎨 **Modern UI/UX**: Built with React, TypeScript, Vite, and shadcn/ui
+
+**Access the Client:**
+```bash
+# Option 1: Run client and server together
+pnpm run dev:all
+
+# Option 2: Run them separately
+pnpm run dev      # Server on http://localhost:3000
+pnpm run client   # Client on http://localhost:5173
+```
+
+**Client URL:** [http://localhost:5173](http://localhost:5173)
 
 ### 1. Install System Dependencies
 
@@ -229,12 +245,20 @@ curl -X POST http://localhost:3000/process-text \
 
 ### Web Interface Testing
 
-Open the test client in your browser:
+Open the modern React client:
 ```bash
-open client/test-client.html
+# Run both server and client
+pnpm run dev:all
+
+# Then visit: http://localhost:5173
 ```
 
-Or visit: http://localhost:3000
+**Client Features:**
+- Visual service status monitoring
+- Real-time voice processing controls  
+- Text processing testing
+- WebSocket live updates
+- Modern responsive UI
 
 ### Real-time Mode (For Live Calls)
 
@@ -472,7 +496,9 @@ say "test"                            # Should hear audio output
 - macOS built-in TTS voice synthesis
 - BlackHole virtual audio routing
 - REST API endpoints
-- Web-based test client
+- **Modern React web client with shadcn/ui**
+- **Real-time WebSocket communication**
+- **Beautiful responsive UI/UX**
 - Real-time voice processing pipeline
 
 ⚠️ **Optional Enhancements:**

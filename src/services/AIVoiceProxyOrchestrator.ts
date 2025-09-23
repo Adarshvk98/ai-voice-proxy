@@ -276,6 +276,31 @@ export class AIVoiceProxyOrchestrator extends EventEmitter {
   }
 
   /**
+   * Get service availability status
+   */
+  async getServiceStatus(): Promise<{
+    whisperAvailable: boolean;
+    ollamaAvailable: boolean;
+    ttsAvailable: boolean;
+    blackHoleInstalled: boolean;
+    realtimeActive: boolean;
+  }> {
+    const [whisperAvailable, ollamaAvailable, ttsAvailable] = await Promise.all([
+      this.whisperService.isAvailable(),
+      this.ollamaService.isAvailable(),
+      this.ttsService.isAvailable(),
+    ]);
+
+    return {
+      whisperAvailable,
+      ollamaAvailable,
+      ttsAvailable,
+      blackHoleInstalled: this.audioService.isBlackHoleInstalled(),
+      realtimeActive: this.isRealTimeMode,
+    };
+  }
+
+  /**
    * Setup audio event handlers for real-time processing
    */
   private setupAudioHandlers(): void {
