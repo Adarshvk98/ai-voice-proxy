@@ -1,6 +1,12 @@
-# AI Voice Proxy
+<div align="center">
+  <img src="client/public/ai-voice-proxy-icon.svg" alt="AI Voice Proxy Icon" width="128" height="128">
+  
+  # AI Voice Proxy
+  
+  A real-time AI voice proxy system that acts as an intelligent intermediary for video calls.
+</div>
 
-A real-time AI voice proxy system that acts as an intelligent intermediary for video calls. When you speak in Microsoft Teams, Slack, Zoom, or any other video conferencing application, this system will:
+When you speak in Microsoft Teams, Slack, Zoom, or any other video conferencing application, this system will:
 
 1. **Listen** to your voice in real-time
 2. **Transcribe** your speech using local Whisper
