@@ -2,18 +2,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Mic, MicOff, Square, Zap, Info } from 'lucide-react'
+import { Mic, MicOff, Square, Zap, Info, Loader2 } from 'lucide-react'
 
 interface RealTimeModeProps {
   isRealTimeActive: boolean
   isConnected: boolean
   onToggleRealTime: () => void
+  isLoading?: boolean
 }
 
 export function RealTimeModeCard({
   isRealTimeActive,
   isConnected,
-  onToggleRealTime
+  onToggleRealTime,
+  isLoading = false
 }: RealTimeModeProps) {
   return (
     <Card className={`border-l-4 ${
@@ -87,7 +89,7 @@ export function RealTimeModeCard({
 
         <Button
           onClick={onToggleRealTime}
-          disabled={!isConnected}
+          disabled={!isConnected || isLoading}
           variant="default"
           className={`w-full relative overflow-hidden transition-all duration-300 ${
             isRealTimeActive 
@@ -100,7 +102,12 @@ export function RealTimeModeCard({
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-[shimmer_3s_infinite]"></div>
           
           <div className="relative z-10 flex items-center justify-center">
-            {isRealTimeActive ? (
+            {isLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <span>{isRealTimeActive ? 'Stopping...' : 'Starting...'}</span>
+              </>
+            ) : isRealTimeActive ? (
               <>
                 <Square className="h-4 w-4 mr-2" />
                 <span>Stop Real-time Processing</span>

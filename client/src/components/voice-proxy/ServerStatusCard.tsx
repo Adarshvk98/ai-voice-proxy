@@ -74,7 +74,7 @@ export function ServerStatusCard({ isConnected, serverStatus, error }: ServerSta
               <Settings className="h-5 w-5" />
               Service Status
               <Badge variant="secondary" className="text-xs">
-                {Object.values(serverStatus).filter(Boolean).length}/4 Services
+                {[serverStatus.whisperAvailable, serverStatus.ollamaAvailable, serverStatus.ttsAvailable, serverStatus.blackHoleInstalled].filter(Boolean).length}/4 Services
               </Badge>
             </CardTitle>
             <CardDescription>
@@ -89,7 +89,7 @@ export function ServerStatusCard({ isConnected, serverStatus, error }: ServerSta
               {getServiceBadge(serverStatus.blackHoleInstalled, "BlackHole Audio")}
             </div>
             
-            {!Object.values(serverStatus).every(Boolean) && (
+            {![serverStatus.whisperAvailable, serverStatus.ollamaAvailable, serverStatus.ttsAvailable, serverStatus.blackHoleInstalled].every(Boolean) && (
               <Alert variant="warning" className="mt-4">
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription>

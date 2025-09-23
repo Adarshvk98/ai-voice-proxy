@@ -1,10 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Volume2, Play, Sparkles, Copy, Check, Info } from 'lucide-react'
+import { Volume2, Play, Sparkles, Copy, Check, Info, Loader2 } from 'lucide-react'
 import { useState } from 'react'
 
 interface TextProcessingProps {
@@ -71,16 +70,6 @@ export function TextProcessingCard({
           />
         </div>
         
-        {isProcessing && (
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-blue-500 animate-pulse" />
-              <span className="text-sm text-gray-600">AI is processing your text...</span>
-            </div>
-            <Progress value={75} className="h-2" />
-          </div>
-        )}
-        
         {!isConnected && (
           <Alert variant="warning">
             <Info className="h-4 w-4" />
@@ -98,8 +87,8 @@ export function TextProcessingCard({
         >
           {isProcessing ? (
             <>
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-              Processing...
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              AI is processing your text...
             </>
           ) : (
             <>

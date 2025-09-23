@@ -20,6 +20,7 @@ export function AIVoiceProxyClient() {
   const [processedText, setProcessedText] = useState('')
   const [voiceName, setVoiceName] = useState('')
   const [isRealTimeActive, setIsRealTimeActive] = useState(false)
+  const [isRealTimeLoading, setIsRealTimeLoading] = useState(false)
   
   const { isConnected, sendMessage, lastMessage, error } = useWebSocket(WS_URL)
 
@@ -54,13 +55,16 @@ export function AIVoiceProxyClient() {
           break
         case 'realTimeStarted':
           setIsRealTimeActive(true)
+          setIsRealTimeLoading(false)
           break
         case 'realTimeStopped':
           setIsRealTimeActive(false)
+          setIsRealTimeLoading(false)
           break
         case 'error':
           console.error('WebSocket error:', message.message)
           setIsProcessing(false)
+          setIsRealTimeLoading(false)
           alert(`Error: ${message.message}`)
           break
       }
@@ -105,6 +109,7 @@ export function AIVoiceProxyClient() {
   }
 
   const handleToggleRealTime = () => {
+    setIsRealTimeLoading(true)
     if (isRealTimeActive) {
       sendMessage({ type: 'stopRealTime' })
     } else {
@@ -151,6 +156,7 @@ export function AIVoiceProxyClient() {
                 isRealTimeActive={isRealTimeActive}
                 isConnected={isConnected}
                 onToggleRealTime={handleToggleRealTime}
+                isLoading={isRealTimeLoading}
               />
             </div>
 

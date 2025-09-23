@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
-import { Mic, Square, Volume2, Upload, CheckCircle, AlertTriangle, Sparkles, AudioWaveform } from 'lucide-react'
+import { Mic, Square, Volume2, Upload, CheckCircle, AlertTriangle, Sparkles, AudioWaveform, Loader2 } from 'lucide-react'
 import { API_BASE_URL } from './types'
 
 interface VoiceCloningProps {
@@ -320,7 +320,7 @@ export function VoiceCloningCard({
         {isUploading && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-purple-500 animate-spin" />
+              <Loader2 className="h-4 w-4 text-purple-500 animate-spin" />
               <span className="text-sm font-medium">Processing voice clone...</span>
               <Badge variant="info" className="text-xs">
                 {uploadProgress}%
@@ -345,7 +345,7 @@ export function VoiceCloningCard({
           >
             {isUploading ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                 Cloning Voice...
               </>
             ) : (
