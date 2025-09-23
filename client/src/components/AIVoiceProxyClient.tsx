@@ -122,40 +122,54 @@ export function AIVoiceProxyClient() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <Header />
-        
-        <ServerStatusCard 
-          isConnected={isConnected}
-          serverStatus={serverStatus}
-          error={error}
-        />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTJlOGYwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=')] opacity-30"></div>
+      
+      <div className="relative z-10 p-4 md:p-6 lg:p-8">
+        <div className="max-w-7xl mx-auto space-y-8">
+          <Header />
+          
+          <div className="space-y-6">
+            <ServerStatusCard 
+              isConnected={isConnected}
+              serverStatus={serverStatus}
+              error={error}
+            />
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <TextProcessingCard
-            testText={testText}
-            setTestText={setTestText}
-            isProcessing={isProcessing}
-            processedText={processedText}
-            onProcessText={handleProcessText}
-          />
+            <div className="grid lg:grid-cols-2 gap-6">
+              <TextProcessingCard
+                testText={testText}
+                setTestText={setTestText}
+                isProcessing={isProcessing}
+                processedText={processedText}
+                onProcessText={handleProcessText}
+              />
 
-          <RealTimeModeCard
-            isRealTimeActive={isRealTimeActive}
-            isConnected={isConnected}
-            onToggleRealTime={handleToggleRealTime}
-          />
+              <RealTimeModeCard
+                isRealTimeActive={isRealTimeActive}
+                isConnected={isConnected}
+                onToggleRealTime={handleToggleRealTime}
+              />
+            </div>
+
+            <VoiceCloningCard
+              voiceName={voiceName}
+              setVoiceName={setVoiceName}
+              isConnected={isConnected}
+              onCloneVoice={handleCloneVoice}
+            />
+
+            <InstructionsCard />
+          </div>
+
+          {/* Footer */}
+          <div className="text-center py-8 border-t border-gray-200 bg-white/50 backdrop-blur-sm rounded-lg">
+            <p className="text-sm text-gray-500">
+              Made with ❤️ by Adarsh VK • AI Voice Proxy: Real-time voice & text magic ✨🔊 • Open source on <a href="https://github.com/adarshvk/ai-voice-proxy" target="_blank" rel="noopener noreferrer" className="underline hover:text-indigo-600">GitHub</a> 🚀
+            </p>
+          </div>
         </div>
-
-        <VoiceCloningCard
-          voiceName={voiceName}
-          setVoiceName={setVoiceName}
-          isConnected={isConnected}
-          onCloneVoice={handleCloneVoice}
-        />
-
-        <InstructionsCard />
       </div>
     </div>
   )
