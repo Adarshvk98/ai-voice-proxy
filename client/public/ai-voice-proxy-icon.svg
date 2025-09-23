@@ -1,0 +1,68 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cleanBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="secondaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Clean background -->
+  <rect width="128" height="128" rx="28" fill="url(#cleanBg)" stroke="#cbd5e1" stroke-width="1"/>
+  
+  <!-- Central microphone with clean design -->
+  <g transform="translate(64, 64)">
+    <!-- Mic body -->
+    <rect x="-12" y="-28" width="24" height="36" rx="12" fill="#ffffff" stroke="#d1d5db" stroke-width="2"/>
+    
+    <!-- Clean mesh pattern -->
+    <g opacity="0.6">
+      <line x1="-8" y1="-20" x2="8" y2="-20" stroke="#9ca3af" stroke-width="1"/>
+      <line x1="-8" y1="-16" x2="8" y2="-16" stroke="#9ca3af" stroke-width="1"/>
+      <line x1="-8" y1="-12" x2="8" y2="-12" stroke="#9ca3af" stroke-width="1"/>
+      <line x1="-8" y1="-8" x2="8" y2="-8" stroke="#9ca3af" stroke-width="1"/>
+      <line x1="-8" y1="-4" x2="8" y2="-4" stroke="#9ca3af" stroke-width="1"/>
+      <line x1="-8" y1="0" x2="8" y2="0" stroke="#9ca3af" stroke-width="1"/>
+    </g>
+    
+    <!-- AI indicator badge -->
+    <circle cx="8" cy="-20" r="6" fill="url(#primaryGrad)"/>
+    <text x="8" y="-17" text-anchor="middle" fill="#ffffff" font-family="Arial" font-size="7" font-weight="bold">AI</text>
+    
+    <!-- Clean stand -->
+    <rect x="-2" y="8" width="4" height="15" fill="#6b7280"/>
+    <ellipse cx="0" cy="23" rx="16" ry="3" fill="#374151"/>
+  </g>
+  
+  <!-- Minimalist sound waves -->
+  <g stroke-linecap="round">
+    <!-- Left waves -->
+    <path d="M 25 64 Q 35 54 25 64 Q 35 74 25 64" stroke="url(#secondaryGrad)" stroke-width="3" fill="none"/>
+    <path d="M 18 64 Q 32 48 18 64 Q 32 80 18 64" stroke="url(#secondaryGrad)" stroke-width="2" fill="none" opacity="0.7"/>
+    <path d="M 12 64 Q 30 42 12 64 Q 30 86 12 64" stroke="url(#secondaryGrad)" stroke-width="1.5" fill="none" opacity="0.5"/>
+    
+    <!-- Right waves -->
+    <path d="M 103 64 Q 93 54 103 64 Q 93 74 103 64" stroke="url(#secondaryGrad)" stroke-width="3" fill="none"/>
+    <path d="M 110 64 Q 96 48 110 64 Q 96 80 110 64" stroke="url(#secondaryGrad)" stroke-width="2" fill="none" opacity="0.7"/>
+    <path d="M 116 64 Q 98 42 116 64 Q 98 86 116 64" stroke="url(#secondaryGrad)" stroke-width="1.5" fill="none" opacity="0.5"/>
+  </g>
+  
+  <!-- Clean signal dots -->
+  <g>
+    <circle cx="40" cy="100" r="2" fill="url(#primaryGrad)" opacity="0.8"/>
+    <circle cx="50" cy="105" r="1.5" fill="url(#secondaryGrad)" opacity="0.9"/>
+    <circle cx="64" cy="108" r="2" fill="url(#primaryGrad)" opacity="0.8"/>
+    <circle cx="78" cy="105" r="1.5" fill="url(#secondaryGrad)" opacity="0.9"/>
+    <circle cx="88" cy="100" r="2" fill="url(#primaryGrad)" opacity="0.8"/>
+  </g>
+  
+  <!-- Subtle border highlight -->
+  <rect x="1" y="1" width="126" height="126" rx="27" fill="none" stroke="url(#primaryGrad)" stroke-width="0.5" opacity="0.3"/>
+</svg>
