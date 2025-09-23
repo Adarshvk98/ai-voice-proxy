@@ -144,6 +144,7 @@ export function AIVoiceProxyClient() {
                 isProcessing={isProcessing}
                 processedText={processedText}
                 onProcessText={handleProcessText}
+                isConnected={isConnected}
               />
 
               <RealTimeModeCard

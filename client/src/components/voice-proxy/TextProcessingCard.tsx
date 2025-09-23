@@ -4,7 +4,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Volume2, Play, Sparkles, Copy, Check } from 'lucide-react'
+import { Volume2, Play, Sparkles, Copy, Check, Info } from 'lucide-react'
 import { useState } from 'react'
 
 interface TextProcessingProps {
@@ -13,6 +13,7 @@ interface TextProcessingProps {
   isProcessing: boolean
   processedText: string
   onProcessText: () => void
+  isConnected: boolean
 }
 
 export function TextProcessingCard({
@@ -20,7 +21,8 @@ export function TextProcessingCard({
   setTestText,
   isProcessing,
   processedText,
-  onProcessText
+  onProcessText,
+  isConnected
 }: TextProcessingProps) {
   const [copied, setCopied] = useState(false)
   
@@ -37,7 +39,7 @@ export function TextProcessingCard({
   const wordCount = testText.trim().split(/\s+/).filter(word => word.length > 0).length
 
   return (
-    <Card className="border-l-4 border-l-green-500">
+    <Card className="border-l-4 border-l-green-500 bg-gradient-to-br from-white to-green-50">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Volume2 className="h-5 w-5" />
@@ -79,9 +81,18 @@ export function TextProcessingCard({
           </div>
         )}
         
+        {!isConnected && (
+          <Alert variant="warning">
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              Connection required for text processing. Please check your connection.
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <Button 
           onClick={onProcessText}
-          disabled={!testText.trim() || isProcessing}
+          disabled={!testText.trim() || isProcessing || !isConnected}
           className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600"
           size="lg"
         >

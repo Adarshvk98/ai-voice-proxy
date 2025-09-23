@@ -19,7 +19,8 @@ export function ServerStatusCard({ isConnected, serverStatus, error }: ServerSta
         <XCircle className="h-4 w-4 text-red-500" />
       )}
       <span className="text-sm font-medium">{name}</span>
-      <Badge variant={available ? "success" : "destructive"} className="text-xs">
+      <Badge variant={available ? "success" : "default"} 
+             className={available ? "text-xs" : "text-xs bg-red-600 text-white hover:bg-red-700"}>
         {available ? "Online" : "Offline"}
       </Badge>
     </div>
@@ -28,7 +29,7 @@ export function ServerStatusCard({ isConnected, serverStatus, error }: ServerSta
   return (
     <>
       {/* Connection Status */}
-      <Card className="border-l-4 border-l-blue-500">
+      <Card className="border-l-4 border-l-blue-500 bg-gradient-to-br from-white to-blue-50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             {isConnected ? (
@@ -37,7 +38,8 @@ export function ServerStatusCard({ isConnected, serverStatus, error }: ServerSta
               <WifiOff className="h-5 w-5 text-red-500" />
             )}
             Connection Status
-            <Badge variant={isConnected ? "success" : "destructive"}>
+            <Badge variant={isConnected ? "success" : "default"} 
+                   className={isConnected ? "" : "bg-red-600 text-white hover:bg-red-700"}>
               {isConnected ? "Connected" : "Disconnected"}
             </Badge>
           </CardTitle>
@@ -66,7 +68,7 @@ export function ServerStatusCard({ isConnected, serverStatus, error }: ServerSta
 
       {/* Server Status */}
       {serverStatus && (
-        <Card className="border-l-4 border-l-purple-500">
+        <Card className="border-l-4 border-l-purple-500 bg-gradient-to-br from-white to-purple-50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Settings className="h-5 w-5" />
